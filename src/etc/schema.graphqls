@@ -1,0 +1,42 @@
+
+# ScandiPWA - Progressive Web App for Magento
+#
+# Copyright © Scandiweb, Inc. All rights reserved.
+# See LICENSE for license details.
+#
+# @license OSL-3.0 (Open Software License ("OSL") v. 3.0)
+# @package scandipwa/gift-card-graphql
+# @link https://github.com/scandipwa/gift-card-graphql
+#
+# Copyright © Magento, Inc. All rights reserved.
+# See COPYING.txt for license details.
+
+type Mutation {
+    applyGiftCard(guestCartId: String, gift_card_code: String!): Query @resolver(class:"\\ScandiPWA\\GiftCardGraphQl\\Model\\Resolver\\ApplyGiftCard")
+    removeGiftCard(guestCartId: String, gift_card_code: String!): Query @resolver(class:"\\ScandiPWA\\GiftCardGraphQl\\Model\\Resolver\\RemoveGiftCard")
+}
+
+extend input CartItemInput {
+    giftcard_options: GiftCardOptionsInput
+}
+
+extend interface TotalsObject {
+    applied_gift_cards(guestCartId: String): [AppliedGiftCard] @resolver(class: "\\ScandiPWA\\GiftCardGraphQl\\Model\\Resolver\\GetAppliedGiftCards") @doc(description: "Contains the code attribute, which specifies the applied gift card codes")
+}
+
+type AppliedGiftCard @doc(description: "Contains the applied gift card with applied and remaining balance") {
+    code: String @doc(description: "Gift card account code")
+    expiration_date: String @doc(description: "Gift card expiration date")
+    current_balance: Money @doc(description: "Current balance remaining on gift card")
+    applied_balance: Money @doc(description: "Applied balance to the current cart")
+}
+
+input GiftCardOptionsInput {
+    giftcard_amount: Float
+    custom_giftcard_amount: Float
+    giftcard_sender_name: String
+    giftcard_recipient_name: String
+    giftcard_sender_email: String
+    giftcard_recipient_email: String
+    giftcard_message: String
+}
